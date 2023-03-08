@@ -1,33 +1,17 @@
-import { useEffect } from 'react'
+import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link, useNavigate } from "react-router-dom"
 import { useMap } from '../../hooks/useMap'
 import { useFetch } from '../../hooks/useFetch'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
 import BaseInput from '../../components/base/BaseInput'
 import BaseButton from '../../components/base/BaseButton'
-import Notification from '../../components/common/Notification'
-import { STORAGE_AUTH_KEY } from '../../constants'
 import { useAuthContext } from '../../containers/AuthProvider'
 
 const SignUpPage = () => {
-  const navigate = useNavigate();
-  const [token] = useLocalStorage(STORAGE_AUTH_KEY)
-  const {setAuthContext} = useAuthContext()
-
-  const [notification, { set: setNotification, setAll: setAllNotification }] = useMap({
-    show: false,
-    title: '',
-    description: '',
-    status: 'success',
-  })
-
-  useEffect(() => {
-    if (token) navigate('/')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
+  const navigate = useNavigate()
+  const { setNotification, setAllNotification } = useAuthContext()
   const fetchHook = useFetch()
+  const [loading, setLoading] = useState(false)
 
   const [formData, { set }] = useMap({
     name: '',
@@ -38,20 +22,39 @@ const SignUpPage = () => {
     institution_name: '',
     phone_no: '',
   })
-  const fields = getFields(formData, set)
+
+  const [validationErrors, { set: setError,reset: resetErrors }] = useMap({
+    password: null,
+    confirm_password: null,
+  })
+
+  const fields = getFields(formData, validationErrors, set)
 
   function signUp(e) {
     e.preventDefault()
+
+    if (formData.password !== formData.confirm_password) {
+      setError('password', 'Password and confirm password do not match')
+      setError('confirm_password', 'Password and confirm password do not match')
+      return
+    }
+    else if (validationErrors.password) {
+      resetErrors()
+    }
+
+    setLoading(true)
 
     fetchHook('users/register', {
       method: 'POST',
       body: JSON.stringify(formData),
     })
       .then(() => {
-        setAuthContext({ email: formData.email })
+        setLoading(false)
+        setNotification('show', false)
         navigate('/auth/verification')
       })
       .catch(err => {
+        setLoading(false)
         setAllNotification({
           show: true,
           title: 'Registration failed',
@@ -62,27 +65,18 @@ const SignUpPage = () => {
   }
 
   return (
-    <div className='sm:max-w-2xl px-4 sm:px-0'>
+    <main className='sm:max-w-2xl px-4 sm:px-0'>
       <Helmet>
         <title>Moksha | Sign up</title>
       </Helmet>
-
-      <Notification
-        show={notification.show}
-        setShow={bool => setNotification('show', bool)}
-        status={ notification.status }
-        title={ notification.title }
-        description={ notification.description }
-      />
 
       <form className="space-y-6" onSubmit={signUp}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           { fields.map(field => <BaseInput key={ field.id } {...field} />) }
         </div>
 
-
         <div>
-          <BaseButton type="submit" stretch>
+          <BaseButton type="submit" stretch loading={loading}>
             Sign up
           </BaseButton>
         </div>
@@ -96,12 +90,12 @@ const SignUpPage = () => {
           </div>
         </div>
       </form>
-    </div>
+    </main>
   )
 }
 export default SignUpPage
 
-const getFields = (formData, set) => {
+const getFields = (formData, validationErrors, set) => {
   const fields = [
     {
       id: "name",
@@ -153,6 +147,7 @@ const getFields = (formData, set) => {
       maxLength: 30,
       label: "Password",
       value: formData.password,
+      validationError: validationErrors.password,
       onChange: e => set('password', e.target.value),
     },
     {
@@ -176,6 +171,7 @@ const getFields = (formData, set) => {
       required: true,
       label: "Confirm password",
       value: formData.confirm_password,
+      validationError: validationErrors.confirm_password,
       onChange: e => set('confirm_password', e.target.value),
     },
   ]

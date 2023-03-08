@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { memo, useEffect, useMemo, useRef, useState } from "react"
-import { useSize } from '../../hooks/useSize'
-import { useScrolling } from '../../hooks/useScrolling'
+import { useSize } from '../../../hooks/useSize'
+import { useScrolling } from '../../../hooks/useScrolling'
 import { useData } from './Wrapper'
-import classNames from '../../utils/classNames'
-import getValueByBreakpoint from '../../utils/getValueAtBreakpoint'
+import classNames from '../../../utils/classNames'
+import getValueByBreakpoint from '../../../utils/getValueAtBreakpoint'
 import styles from './style.module.css'
 
-export default function TzCardsSlider({ children, className, gap }) {
+export default function CardsSlider({ children, className, gap }) {
   const { context, setContext } = useData()
   const rootRef = useRef(null)
   const [effectiveGap, setGap] = useState(0)
@@ -15,8 +15,8 @@ export default function TzCardsSlider({ children, className, gap }) {
   const isScrolling = useScrolling(rootRef)
 
   const cardWidth = useMemo(
-    () => getCardWidth(rootWidth, context.visibleCount, effectiveGap, context.exposeWidth),
-    [effectiveGap, rootWidth, context.visibleCount, context.exposeWidth]
+    () => getCardWidth(rootWidth, context.visibleCount, effectiveGap, context.exposeWidth, context.list.length),
+    [effectiveGap, rootWidth, context.visibleCount, context.exposeWidth, context.list.length]
   )
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function TzCardsSlider({ children, className, gap }) {
         ref={rootRef}
         className={classNames(
           'py-2 w-full h-full flex overflow-x-scroll scroll-smooth snap-x',
-          styles['tz-cards-slider-scrollbar']
+          styles['cards-slider-scrollbar']
         )}
         style={{ gap: `${effectiveGap}px` }}
       >
@@ -79,7 +79,8 @@ const Card = memo(({ children, item, style }) => (
   </div>
 ))
 
-const getCardWidth = (rootWidth, visibleCount, gap, exposeWidth) => {
-  const availableWidth = rootWidth - exposeWidth
+const getCardWidth = (rootWidth, visibleCount, gap, exposeWidth, listLength) => {
+  const effectiveExposeWidth = listLength > visibleCount ? exposeWidth : 0
+  const availableWidth = rootWidth - effectiveExposeWidth
   return Math.floor((availableWidth - (visibleCount - 1) * gap) / visibleCount)
 }

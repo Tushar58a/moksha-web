@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef } from "react"
-import { useMap } from '../../hooks/useMap'
-import getValueByBreakpoint from '../../utils/getValueAtBreakpoint'
+import { useMap } from '../../../hooks/useMap'
+import getValueByBreakpoint from '../../../utils/getValueAtBreakpoint'
 
 const DataContext = createContext(null)
 
@@ -73,8 +73,9 @@ const Wrapper = ({ list, children, visibleCount, exposeWidth = 0 }) => {
     scrollToEnd,
     start: context.start,
     end: context.end,
+    visible: context.visibleCount,
     total: list.length,
-  }), [next, prev, scrollToStart, scrollToEnd, context.start, context.end, list.length])
+  }), [next, prev, scrollToStart, scrollToEnd, context.start, context.end, context.visibleCount, list.length])
 
   return (
     <DataContext.Provider value={{ context, setContext }}>
