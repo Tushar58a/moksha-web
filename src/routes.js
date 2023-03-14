@@ -16,6 +16,7 @@ import AccountLayout from './layouts/account'
 
 import Home from './pages/Home'
 import Events from './pages/Events'
+import Event from './pages/Events/Event'
 import Contests from './pages/Contests'
 import Contest from './pages/Contests/Contest'
 import Faqs from './pages/Faqs'
@@ -80,7 +81,10 @@ const router = createBrowserRouter(
     <Route element={<FloatingWindow />}>
       <Route element={<DefaultLayout />}>
         <Route path='/' element={<Home />} />
+
         <Route path='/events' element={<Events />} />
+        <Route path='/events/:event' element={<Event />} />
+
         <Route path='/faqs' element={<Faqs />} />
         <Route path='/sponsors' element={<Sponsors />} />
 

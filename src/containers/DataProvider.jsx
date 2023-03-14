@@ -1,5 +1,5 @@
-import { createContext, useContext, useMemo } from "react"
-import { useMap } from "../hooks/useMap"
+import { createContext, useContext, useMemo } from 'react'
+import { useMap } from '../hooks/useMap'
 
 const data = {
   authenticated: false,
@@ -11,7 +11,7 @@ const data = {
     avatar_idx: 0,
     institution_name: '',
     phone_no: '',
-  }
+  },
 }
 
 const DataContext = createContext(null)
@@ -21,11 +21,7 @@ const DataProvider = ({ children }) => {
 
   const providerContext = useMemo(() => ({ appContext, setAppContext, resetAuthContext }), [appContext])
 
-  return (
-    <DataContext.Provider value={providerContext}>
-      {children}
-    </DataContext.Provider>
-  )
+  return <DataContext.Provider value={providerContext}>{children}</DataContext.Provider>
 }
 
 export const useAppContext = () => {

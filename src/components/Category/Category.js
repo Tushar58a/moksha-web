@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Tab } from '@headlessui/react'
 
-function Category({ events, filterEvents }) {
+function Category({ events, filterEvents, resetEvents }) {
   const [items, setItems] = useState(events)
 
   const filter = cetItem => {
@@ -12,9 +12,23 @@ function Category({ events, filterEvents }) {
     filterEvents(updatedItems)
   }
   return (
-    <div className='w-full max-w-md px-2 mx-auto py-16 sm:px-0'>
+    <div>
       <Tab.Group>
-        <Tab.List className='flex space-x-1 rounded-xl  p-1'>
+        <Tab.List className='my-4 sm:my-6 grid grid-cols-5 rounded-t-lg bg-amber-900/30 text-gray-200 text-sm font-medium divide-x divide-amber-900/70 overflow-hidden'>
+          <Tab
+            onClick={() => {
+              resetEvents()
+            }}
+            className={({ selected }) =>
+              `whitespace-nowrap rounded-t-lg py-3 px-5 text-sm font-light outline-none md:py-4 md:px-6 md:text-base ${
+                selected
+                  ? 'borderGradient bg-ochre/20 text-white border-b-2 border-ochre'
+                  : 'border-b-2 border-ochre text-[#c1c1c1]'
+              }`
+            }
+          >
+            ALL
+          </Tab>
           <Tab
             onClick={() => {
               filter('MOKSHA')
@@ -55,7 +69,7 @@ function Category({ events, filterEvents }) {
               }`
             }
           >
-            EDM NIGHTS
+            EDM <span className='hidden sm:inline'>NIGHTS</span>
           </Tab>
           <Tab
             onClick={() => {
