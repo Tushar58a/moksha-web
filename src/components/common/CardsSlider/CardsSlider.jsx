@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { memo, useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useSize } from '../../../hooks/useSize'
 import { useScrolling } from '../../../hooks/useScrolling'
 import { useData } from './Wrapper'
@@ -7,16 +7,31 @@ import classNames from '../../../utils/classNames'
 import getValueByBreakpoint from '../../../utils/getValueAtBreakpoint'
 import styles from './style.module.css'
 
-export default function CardsSlider({ children, className, gap }) {
+// interface CardsSliderProps {
+//   children: ReactNode
+//   className: string
+//   gap: number | Breakpoint
+//   /**
+//    * Stretch the cards to fill the empty space if not enough cards are available to fill the visible count.
+//    * @default false
+//    */
+//   stretch?: boolean
+// }
+
+export default function CardsSlider({ children, className, gap, stretch = false }) {
   const { context, setContext } = useData()
   const rootRef = useRef(null)
   const [effectiveGap, setGap] = useState(0)
   const { width: rootWidth } = useSize(rootRef)
   const isScrolling = useScrolling(rootRef)
 
-  const cardWidth = useMemo(
-    () => getCardWidth(rootWidth, context.visibleCount, effectiveGap, context.exposeWidth, context.list.length),
-    [effectiveGap, rootWidth, context.visibleCount, context.exposeWidth, context.list.length]
+  const cardWidth = useMemo(() => {
+      const effectiveExposeWidth = context.length <= context.visibleCount && stretch ? 0 : context.exposeWidth
+      const availableWidth = rootWidth - effectiveExposeWidth
+
+      return Math.floor((availableWidth - (context.visibleCount - 1) * effectiveGap) / context.visibleCount)
+    },
+    [effectiveGap, rootWidth, context.visibleCount, context.exposeWidth, context.length]
   )
 
   useEffect(() => {
@@ -61,26 +76,8 @@ export default function CardsSlider({ children, className, gap }) {
         )}
         style={{ gap: `${effectiveGap}px` }}
       >
-        {
-          context.list.map(item => (
-            <Card key={ item.id } item={item} style={{ width: `${cardWidth}px` }}>
-              { children }
-            </Card>
-          ))
-        }
+        { children({cardWidth}) }
       </div>
     </div>
   )
-}
-
-const Card = memo(({ children, item, style }) => (
-  <div className="flex-shrink-0 snap-center" style={style}>
-    {children(item)}
-  </div>
-))
-
-const getCardWidth = (rootWidth, visibleCount, gap, exposeWidth, listLength) => {
-  const effectiveExposeWidth = listLength > visibleCount ? exposeWidth : 0
-  const availableWidth = rootWidth - effectiveExposeWidth
-  return Math.floor((availableWidth - (visibleCount - 1) * gap) / visibleCount)
 }

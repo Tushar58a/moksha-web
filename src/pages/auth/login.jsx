@@ -1,29 +1,29 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { Link, useNavigate } from "react-router-dom"
-import { useMap } from '../../hooks/useMap'
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { useFetch } from '../../hooks/useFetch'
 import BaseInput from '../../components/base/BaseInput'
 import BaseButton from '../../components/base/BaseButton'
 import { useAppContext } from '../../containers/DataProvider'
 import { useAuthContext } from '../../containers/AuthProvider'
+import getFormData from '../../utils/getFormData'
 
 const LoginPage = () => {
   const { setAppContext } = useAppContext()
   const { setNotification, setAllNotification } = useAuthContext()
+
   const navigate = useNavigate()
+  let [searchParams] = useSearchParams()
 
   const fetchHook = useFetch()
+  const formRef = useRef(null)
   const [loading, setLoading] = useState(false)
-
-  const [formData, { set }] = useMap({
-    email: '',
-    password: '',
-  })
 
   const signIn = useCallback(e => {
     e.preventDefault()
     setLoading(true)
+
+    const formData = getFormData(formRef.current, { format: 'object' })
 
     fetchHook('users/login', {
       method: 'POST',
@@ -36,7 +36,9 @@ const LoginPage = () => {
 
       fetchHook('users/particular').then(res => {
         setAppContext('authUser', res.payload)
-        navigate('/')
+
+        if (searchParams.get('from')) navigate(decodeURIComponent(searchParams.get('from')))
+        else navigate('/')
       })
     })
     .catch(err => {
@@ -48,7 +50,7 @@ const LoginPage = () => {
         status: 'error',
       })
     })
-  }, [formData])
+  }, [formRef])
 
   return (
     <main className='max-w-md px-4 sm:px-0'>
@@ -56,7 +58,7 @@ const LoginPage = () => {
         <title>Moksha | Login</title>
       </Helmet>
 
-      <form className="space-y-6" onSubmit={signIn}>
+      <form ref={formRef} className="space-y-6" onSubmit={signIn}>
         <BaseInput
           id="email"
           name="email"
@@ -64,8 +66,6 @@ const LoginPage = () => {
           autoComplete="email"
           required
           label="Email address"
-          value={formData.email}
-          onChange={e => set('email', e.target.value)}
         />
 
         <BaseInput
@@ -75,8 +75,6 @@ const LoginPage = () => {
           autoComplete="current-password"
           required
           label="Password"
-          value={formData.password}
-          onChange={e => set('password', e.target.value)}
         />
 
         <div className="text-sm flex items-center justify-between">
@@ -98,7 +96,7 @@ const LoginPage = () => {
         <div className="flex items-center">
           <div className="text-sm">
             <span className="text-gray-100">Don&apos;t have an account?</span>{' '}
-            <Link to="/auth/register">
+            <Link to={{pathname: "/auth/register", search: searchParams.toString()}}>
               <span className="font-medium text-amber-600 hover:text-amber-500 cursor-pointer">Sign up</span>
             </Link>
           </div>

@@ -1,6 +1,6 @@
-import { memo, useEffect, useRef } from 'react'
+import { Fragment, memo, useEffect, useRef } from 'react'
 import { Icon } from '@iconify/react'
-import Transition from './Transition'
+import { Transition } from '@headlessui/react'
 import { AiOutlineExclamationCircle } from 'react-icons/ai'
 import closeIcon from '@iconify-icons/mdi/close'
 import checkIcon from '@iconify-icons/mdi/check-circle-outline'
@@ -33,6 +33,7 @@ const Notification = memo(({ title, description, show, setShow, timeout, status 
       <div className="w-full flex flex-col items-center space-y-4">
         <Transition
           show={show}
+          as={Fragment}
           enter="transform ease-out duration-300 transition"
           enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
           enterTo="translate-y-0 opacity-100 sm:translate-x-0"
