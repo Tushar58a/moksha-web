@@ -20,7 +20,7 @@ function Category({ events, filterEvents, resetEvents }) {
               resetEvents()
             }}
             className={({ selected }) =>
-              `whitespace-nowrap rounded-t-lg py-3 px-5 text-sm font-light outline-none md:py-4 md:px-6 md:text-base ${
+              `whitespace-nowrap rounded-t-lg py-3 px-5 text-xs sm:text-sm flex justify-center items-center font-light outline-none md:py-4 md:px-6 md:text-base ${
                 selected
                   ? 'borderGradient bg-ochre/20 text-white border-b-2 border-ochre'
                   : 'border-b-2 border-ochre text-[#c1c1c1]'
@@ -34,7 +34,7 @@ function Category({ events, filterEvents, resetEvents }) {
               filter('MOKSHA')
             }}
             className={({ selected }) =>
-              `whitespace-nowrap rounded-t-lg py-3 px-5 text-sm font-light outline-none md:py-4 md:px-6 md:text-base ${
+              `whitespace-nowrap rounded-t-lg py-3 px-5 text-xs sm:text-sm flex justify-center items-center font-light outline-none md:py-4 md:px-6 md:text-base ${
                 selected
                   ? 'borderGradient bg-ochre/20 text-white border-b-2 border-ochre'
                   : 'border-b-2 border-ochre text-[#c1c1c1]'
@@ -48,7 +48,7 @@ function Category({ events, filterEvents, resetEvents }) {
               filter('UDAAN')
             }}
             className={({ selected }) =>
-              `whitespace-nowrap rounded-t-lg py-3 px-5 text-sm font-light outline-none md:py-4 md:px-6 md:text-base ${
+              `whitespace-nowrap rounded-t-lg py-3 px-5 text-xs sm:text-sm flex justify-center items-center font-light outline-none md:py-4 md:px-6 md:text-base ${
                 selected
                   ? 'borderGradient bg-ochre/20 text-white border-b-2 border-ochre'
                   : 'border-b-2 border-ochre text-[#c1c1c1]'
@@ -62,7 +62,7 @@ function Category({ events, filterEvents, resetEvents }) {
               filter('EDM NIGHTS')
             }}
             className={({ selected }) =>
-              `whitespace-nowrap rounded-t-lg py-3 px-5 text-sm font-light outline-none md:py-4 md:px-6 md:text-base ${
+              `whitespace-nowrap rounded-t-lg py-3 px-5 text-xs sm:text-sm flex justify-center items-center font-light outline-none md:py-4 md:px-6 md:text-base ${
                 selected
                   ? 'borderGradient bg-ochre/20 text-white border-b-2 border-ochre'
                   : 'border-b-2 border-ochre text-[#c1c1c1]'
@@ -76,7 +76,7 @@ function Category({ events, filterEvents, resetEvents }) {
               filter('CLUBS')
             }}
             className={({ selected }) =>
-              `whitespace-nowrap rounded-t-lg py-3 px-5 text-sm font-light outline-none md:py-4 md:px-6 md:text-base ${
+              `whitespace-nowrap rounded-t-lg py-3 px-5 text-xs sm:text-sm flex justify-center items-center font-light outline-none md:py-4 md:px-6 md:text-base ${
                 selected
                   ? 'borderGradient bg-ochre/20 text-white border-b-2 border-ochre'
                   : 'border-b-2 border-ochre text-[#c1c1c1]'
